@@ -89,7 +89,7 @@ jobs:
       # The Windows lane spawns the real desktop-update hand-off script
       # (tests/test_desktop_update_windows_*.py) only when that surface
       # changed; unit-level windows_only tests always run.
-      desktop_updater: ${{ needs.detect.outputs.desktop_updater == 'true' }}
+      desktop_updater: ${{ needs.detect.outputs.desktop_updater }}
 
   lint:
     name: Python lints
@@ -201,8 +201,9 @@ jobs:
     uses: ./.github/workflows/supply-chain-audit.yml
     with:
       event_name: ${{ needs.detect.outputs.event_name }}
-      scan: ${{ needs.detect.outputs.scan == 'true' }}
-      deps: ${{ needs.detect.outputs.deps == 'true' }}
+      # Buildkite requires runtime reusable-workflow inputs to be strings.
+      scan: ${{ needs.detect.outputs.scan }}
+      deps: ${{ needs.detect.outputs.deps }}
 
   review-labels:
     name: Review label gate
@@ -210,10 +211,10 @@ jobs:
     if: always() && needs.detect.outputs.event_name == 'pull_request' && (needs.detect.outputs.ci_review == 'true' || needs.detect.outputs.mcp_catalog == 'true' || needs.supply-chain.outputs.critical_findings == 'true')
     uses: ./.github/workflows/review-labels.yml
     with:
-      ci_review: ${{ needs.detect.outputs.ci_review == 'true' }}
+      ci_review: ${{ needs.detect.outputs.ci_review }}
       ci_review_files: ${{ needs.detect.outputs.ci_review_files }}
-      mcp_catalog: ${{ needs.detect.outputs.mcp_catalog == 'true' }}
-      supply_chain: ${{ needs.supply-chain.outputs.critical_findings == 'true' }}
+      mcp_catalog: ${{ needs.detect.outputs.mcp_catalog }}
+      supply_chain: ${{ needs.supply-chain.outputs.critical_findings }}
 
   osv-scanner:
     name: OSV scan

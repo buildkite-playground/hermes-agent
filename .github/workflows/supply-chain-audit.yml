@@ -10,7 +10,7 @@ name: Supply Chain Audit
 # advisory-only workflow instead.
 #
 # Path-gating is handled centrally by the ``ci.yml`` orchestrator's
-# ``detect`` job. The orchestrator passes ``scan`` / ``deps`` booleans as
+# ``detect`` job. The orchestrator passes ``scan`` / ``deps`` as "true" / "false"
 # inputs; this workflow's jobs gate on those inputs instead of re-computing
 # the diff. MCP catalog review was previously here but has moved to
 # ``review-labels.yml`` so it can be rerun independently.
@@ -32,11 +32,11 @@ on:
         required: true
       scan:
         description: Whether supply-chain-relevant files changed.
-        type: boolean
+        type: string
         required: true
       deps:
         description: Whether pyproject.toml changed.
-        type: boolean
+        type: string
         required: true
     outputs:
       review_status:
@@ -53,7 +53,7 @@ permissions:
 jobs:
   scan:
     name: Scan PR for critical supply chain risks
-    if: inputs.scan
+    if: inputs.scan == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
@@ -179,7 +179,7 @@ jobs:
 
   dep-bounds:
     name: Check PyPI dependency upper bounds
-    if: inputs.deps
+    if: inputs.deps == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:

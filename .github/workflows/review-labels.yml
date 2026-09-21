@@ -21,20 +21,20 @@ on:
     inputs:
       ci_review:
         description: Whether CI-sensitive files (eslint config, workflows, actions) changed.
-        type: boolean
-        default: false
+        type: string
+        default: 'false'
       ci_review_files:
         description: JSON list of CI-sensitive files changed by the pull request.
         type: string
         default: '[]'
       mcp_catalog:
         description: Whether the MCP catalog / installer changed.
-        type: boolean
-        default: false
+        type: string
+        default: 'false'
       supply_chain:
         description: Whether the critical supply-chain scan found a risk requiring review.
-        type: boolean
-        default: false
+        type: string
+        default: 'false'
     outputs:
       ci_reviewed:
         description: Whether the ci-reviewed label is present. Empty when neither input was true.
@@ -50,7 +50,7 @@ permissions:
 jobs:
   check:
     name: Review label gate
-    if: inputs.ci_review || inputs.mcp_catalog || inputs.supply_chain
+    if: inputs.ci_review == 'true' || inputs.mcp_catalog == 'true' || inputs.supply_chain == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:

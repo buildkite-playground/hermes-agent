@@ -37,9 +37,9 @@ on:
           caller gates them on the classifier's desktop_updater lane so a PR
           that never touched that surface cannot be failed by it. Push /
           dispatch runs fail open (classifier sets every lane true).
-        type: boolean
+        type: string
         required: false
-        default: true
+        default: 'true'
 
 permissions:
   contents: read
